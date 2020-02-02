@@ -3,7 +3,7 @@
 # - Push docker image to registry
 
 PROJECT_NAME=sidious
-VERSION="0.0.1"
+VERSION=$(shell cat version)
 IMAGE="ahardt013/${PROJECT_NAME}:${VERSION}"
 IMAGE_LATEST="ahardt013/${PROJECT_NAME}:latest"
 TOKEN = ${DISCORD_TOKEN}
