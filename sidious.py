@@ -28,8 +28,6 @@ async def execute(ctx, *, content):
         await thirty_seven(ctx)
     elif content == "5":
         await five(ctx)
-    # elif content == "4":
-    #    four(ctx)
     elif content == "help":
         await ctx.message.channel.send(
             f"4 - {FOUR}\n5 - {FIVE}\n37 - {THIRTY_SEVEN}\n65 - {SIXTY_FIVE}\n66 - {SIXTY_SIX}")
@@ -43,10 +41,12 @@ async def sixty_six(ctx):
     print(ctx.message.guild.roles)
     if is_admin(ctx.message.author):
         for member in ctx.message.guild.members:
-            # if member not in (ctx.message.author, ctx.message.guild.me):
-            if member != ctx.message.guild.me:
-                print(member.name)
-                await member.edit(voice_channel=None, reason=random_success_quote())
+            try:
+                if member != ctx.message.guild.me:
+                    print(member.name)
+                    await member.edit(voice_channel=None, reason=random_success_quote())
+            except: #pylint:disable=bare-except
+                pass
         await ctx.message.channel.send(random_success_quote())
     else:
         await ctx.message.channel.send(random_failure_quote())
@@ -58,11 +58,14 @@ async def sixty_five(ctx):
     print(ctx.message.guild.roles)
     if is_admin(ctx.message.author):
         for member in ctx.message.guild.members:
-            if member != ctx.message.guild.me and is_barb(member):
-                await member.edit(
-                    voice_channel=get_voice_channel(
-                        ctx, "⚓Barbossa's Chamber"),
-                    reason=random_success_quote())
+            try:
+                if member != ctx.message.guild.me and is_barb(member):
+                    await member.edit(
+                        voice_channel=get_voice_channel(
+                            ctx, "⚓Barbossa's Chamber"),
+                        reason=random_success_quote())
+            except: #pylint:disable=bare-except
+                pass
         await ctx.message.channel.send(random_success_quote())
     else:
         await ctx.message.channel.send(random_failure_quote())
@@ -72,11 +75,14 @@ async def thirty_seven(ctx):
     """ order 5 """
     if is_admin(ctx.message.author):
         for member in ctx.message.guild.members:
-            if member not in (ctx.message.author, ctx.message.guild.me):
-                await member.edit(
-                    voice_channel=get_voice_channel(
-                        ctx, "💦Moist Chamber"),
-                    reason=random_success_quote())
+            try:
+                if member not in (ctx.message.author, ctx.message.guild.me):
+                    await member.edit(
+                        voice_channel=get_voice_channel(
+                            ctx, "💦Moist Chamber"),
+                        reason=random_success_quote())
+            except: #pylint:disable=bare-except
+                pass
         await ctx.message.channel.send(random_success_quote())
     else:
         await ctx.message.channel.send(random_failure_quote())
@@ -86,11 +92,14 @@ async def five(ctx):
     """ order 5 """
     if is_admin(ctx.message.author):
         for member in ctx.message.guild.members:
-            if member != ctx.message.guild.me and is_admin(member):
-                await member.edit(
-                    voice_channel=get_voice_channel(
-                        ctx, "🎩Admin Lobby"),
-                    reason=random_success_quote())
+            try:
+                if member != ctx.message.guild.me and is_admin(member):
+                    await member.edit(
+                        voice_channel=get_voice_channel(
+                            ctx, "🎩Admin Lobby"),
+                        reason=random_success_quote())
+            except: #pylint:disable=bare-except
+                pass
         await ctx.message.channel.send(random_success_quote())
     else:
         await ctx.message.channel.send(random_failure_quote())
@@ -143,7 +152,6 @@ ADMIN_ROLES = [
 
 
 # Trailer Park Supervisor
-
 # ----------------------------- QUOTES -----------------------------
 SUCCESS = [
     "Everything that has transpired has done so according to my design.",

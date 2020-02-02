@@ -25,4 +25,4 @@ publish: build
 
 dev: build
 	@echo ? Running docker container locally.
-	@docker run --rm -it -e DISCORD_TOKEN=${TOKEN} ${IMAGE_LATEST}
+	@docker run --rm -it -d -e DISCORD_TOKEN=${TOKEN} ${IMAGE_LATEST}
