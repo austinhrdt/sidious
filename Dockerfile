@@ -8,6 +8,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ADD . /app/
 RUN pip install --requirement /app/requirements.txt
 
+RUN apt update && apt install ffmpeg -y
+
+
 WORKDIR /app
 # start app
 CMD ["python", "sidious.py"]

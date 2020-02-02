@@ -1,6 +1,8 @@
 """ darth sidious bot """
-import os
+import os, io
 from random import randint
+import asyncio
+from pydub import AudioSegment
 import discord
 from discord.ext import commands
 
@@ -40,10 +42,10 @@ async def sixty_six(ctx):
     print(ctx.message.guild.voice_channels)
     print(ctx.message.guild.roles)
     if is_admin(ctx.message.author):
+        await play_sound(ctx)
         for member in ctx.message.guild.members:
             try:
                 if member != ctx.message.guild.me:
-                    print(member.name)
                     await member.edit(voice_channel=None, reason=random_success_quote())
             except: #pylint:disable=bare-except
                 pass
@@ -105,6 +107,17 @@ async def five(ctx):
         await ctx.message.channel.send(random_failure_quote())
 
 
+async def play_sound(ctx):
+    """ play sound """
+    user = ctx.message.author
+    voice_channel = user.voice.channel
+    if voice_channel is not None:
+        vc = await voice_channel.connect() #pylint:disable=invalid-name
+        vc.play(discord.FFmpegPCMAudio('audio.mp3'), after=lambda e: print('done'))
+        while vc.is_playing():
+            await asyncio.sleep(1)
+        await vc.disconnect()
+
 def get_voice_channel(ctx, name):
     """ returns voice channel """
     for channel in ctx.message.guild.voice_channels:
@@ -144,6 +157,8 @@ def random_failure_quote():
     return FAILURE[randint(0, len(FAILURE) - 1)]
 
 
+VIDEO = "https://www.youtube.com/watch?v=sNjWpZmxDgg"
+
 ADMIN_ROLES = [
     "adminnss",
     "Shareholder",
@@ -159,7 +174,7 @@ SUCCESS = [
     "Are you threatening me, Master Jedi?",
     "The remaining Jedi will be hunted down and defeated!",
     "POWER!!! UNLIMITED... POWER!!!",
-    ":doit:"
+    "Do it!"
 ]
 
 FAILURE = [
