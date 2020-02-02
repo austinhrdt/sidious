@@ -1,4 +1,4 @@
-""" emperor palpatine bot """
+""" darth sidious bot """
 import os
 from random import randint
 import discord
