@@ -72,6 +72,7 @@ async def sixty_five(ctx):
         await ctx.message.channel.send(random_failure_quote())
 
 
+
 async def thirty_seven(ctx):
     """ order 5 """
     if is_admin(ctx.message.author):
@@ -155,8 +156,6 @@ def random_failure_quote():
     """ return string of random failure quote """
     return FAILURE[randint(0, len(FAILURE) - 1)]
 
-
-VIDEO = "https://www.youtube.com/watch?v=sNjWpZmxDgg"
 
 ADMIN_ROLES = [
     "adminnss",
