@@ -1,8 +1,7 @@
 """ darth sidious bot """
-import os, io
+import os
 from random import randint
 import asyncio
-from pydub import AudioSegment
 import discord
 from discord.ext import commands
 
