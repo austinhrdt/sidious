@@ -6,7 +6,7 @@ PROJECT_NAME=sidious
 VERSION="0.0.1"
 IMAGE="ahardt013/${PROJECT_NAME}:${VERSION}"
 IMAGE_LATEST="ahardt013/${PROJECT_NAME}:latest"
-
+TOKEN = ${DISCORD_TOKEN}
 
 default: build
 
@@ -25,4 +25,4 @@ publish: build
 
 dev: build
 	@echo ? Running docker container locally.
-	@docker run --rm -it ${IMAGE_LATEST}
+	@docker run --rm -it -e DISCORD_TOKEN=${TOKEN} ${IMAGE_LATEST}

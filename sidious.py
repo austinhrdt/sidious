@@ -1,12 +1,9 @@
 """ emperor palpatine bot """
-import configparser
+import os
 from random import randint
 import discord
 from discord.ext import commands
 
-
-config = configparser.ConfigParser()  # pylint:disable=invalid-name
-config.read('config.ini')
 
 bot = commands.Bot(command_prefix='!')  # pylint:disable=invalid-name
 client = discord.Client()  # pylint:disable=invalid-name
@@ -201,4 +198,4 @@ until a new command structure is established.
 """
 
 
-bot.run(config['TOKEN']['TOKEN'])
+bot.run(os.getenv("DISCORD_TOKEN"))
