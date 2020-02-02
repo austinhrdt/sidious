@@ -41,7 +41,7 @@ async def sixty_six(ctx):
     print(ctx.message.guild.voice_channels)
     print(ctx.message.guild.roles)
     if is_admin(ctx.message.author):
-        await play_sound(ctx)
+        await play_sound(ctx, "audio.mp3")
         for member in ctx.message.guild.members:
             try:
                 if member != ctx.message.guild.me:
@@ -74,8 +74,9 @@ async def sixty_five(ctx):
 
 
 async def thirty_seven(ctx):
-    """ order 5 """
+    """ order 37 """
     if is_admin(ctx.message.author):
+        await play_sound(ctx, "doit.mp3")
         for member in ctx.message.guild.members:
             try:
                 if member not in (ctx.message.author, ctx.message.guild.me):
@@ -107,13 +108,12 @@ async def five(ctx):
         await ctx.message.channel.send(random_failure_quote())
 
 
-async def play_sound(ctx):
+async def play_sound(ctx, filename):
     """ play sound """
-    user = ctx.message.author
-    voice_channel = user.voice.channel
+    voice_channel = get_voice_channel(ctx, '🎭Main Lobby')
     if voice_channel is not None:
         vc = await voice_channel.connect() #pylint:disable=invalid-name
-        vc.play(discord.FFmpegPCMAudio('audio.mp3'), after=lambda e: print('done'))
+        vc.play(discord.FFmpegPCMAudio(filename), after=lambda e: print('done'))
         while vc.is_playing():
             await asyncio.sleep(1)
         await vc.disconnect()
