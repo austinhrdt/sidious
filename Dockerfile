@@ -1,6 +1,7 @@
 FROM python:3.8.0-slim-buster
 
 LABEL maintainer "Austin Hardt <austinhrdt@icloud.com>"
+LABEL project "sidious"
 
 # add project contents and install dependencies
 ADD . /app/
