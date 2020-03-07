@@ -16,6 +16,12 @@
             "essential": true
         }
     ],
+    "secrets": [
+        {
+            "name": "DISCORD_TOKEN",
+            "valueFrom": "sidious_token"
+        }
+    ],
     "requiresCompatibilities": [
         "FARGATE"
     ],
