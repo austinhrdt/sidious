@@ -1,16 +1,16 @@
-# collector DOCKERFILE
 FROM python:3.8.0-slim-buster
 
-ENV TZ=America/New_York
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+LABEL maintainer "Austin Hardt <austinhrdt@icloud.com>"
 
 # add project contents and install dependencies
 ADD . /app/
 RUN pip install --requirement /app/requirements.txt
 
+# install ffmpeg
 RUN apt update && apt install ffmpeg -y
 
-
+# set workdir to /app
 WORKDIR /app
+
 # start app
 CMD ["python", "sidious.py"]

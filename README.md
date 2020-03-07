@@ -1,5 +1,5 @@
 # Sidious
 
-A Discord Bot
+Darth Sidious discord bot. Admins can send `!execute 66` into a text channel & bot will disconnect all active users from all voice channels.
 
-`!execute [order]`
+![Sheev](media/sidious.JPG)

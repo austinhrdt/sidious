@@ -1,222 +1,75 @@
-""" darth sidious bot """
+""" Darth Sidious discord bot.
+
+https://github.com/austinhrdt/sidious
+
+"""
 import os
-from random import randint
 import asyncio
 import discord
 from discord.ext import commands
 
 
-bot = commands.Bot(command_prefix='!')  # pylint:disable=invalid-name
-client = discord.Client()  # pylint:disable=invalid-name
-
-
-@bot.event
-async def on_ready():
-    """ start up ... """
-    print(bot.user.name)
-    print(bot.user.id)
+bot = commands.Bot(command_prefix='!')
 
 
 @bot.command(pass_context=True)
 async def execute(ctx, *, content):
-    """ execute [order] """
-    print(ctx)
-    if content == "66":
-        await sixty_six(ctx)
-    elif content == "65":
-        await sixty_five(ctx)
-    elif content == "37":
-        await thirty_seven(ctx)
-    elif content == "5":
-        await five(ctx)
-    elif content == "help":
-        await ctx.message.channel.send(
-            f"4 - {FOUR}\n5 - {FIVE}\n37 - {THIRTY_SEVEN}\n65 - {SIXTY_FIVE}\n66 - {SIXTY_SIX}")
+    """ listens to text channel for !execute.
+    :param: context
+    :param: content - the text after the command
+    """
+    if content == "66" and is_admin(ctx.message.author):
+        users = get_active_users(ctx.message.guild.voice_channels)
+        await speak(ctx.message.author.voice, "media/sixtysix.mp3")
+        await disconnect_users(users)
     else:
-        await ctx.message.channel.send(random_failure_quote())
-
-
-async def sixty_six(ctx):
-    """ order 66 """
-    print(ctx.message.guild.voice_channels)
-    print(ctx.message.guild.roles)
-    if is_admin(ctx.message.author):
-        await play_sound(ctx, "audio.mp3")
-        for member in ctx.message.guild.members:
-            try:
-                if member != ctx.message.guild.me:
-                    await member.edit(voice_channel=None, reason=random_success_quote())
-            except: #pylint:disable=bare-except
-                pass
-        await ctx.message.channel.send(random_success_quote())
-    else:
-        await ctx.message.channel.send(random_failure_quote())
-
-
-async def sixty_five(ctx):
-    """ order 5 """
-    print(ctx.message.guild.voice_channels)
-    print(ctx.message.guild.roles)
-    if is_admin(ctx.message.author):
-        for member in ctx.message.guild.members:
-            try:
-                if member != ctx.message.guild.me and is_barb(member):
-                    await member.edit(
-                        voice_channel=get_voice_channel(
-                            ctx, "⚓Barbossa's Chamber"),
-                        reason=random_success_quote())
-            except: #pylint:disable=bare-except
-                pass
-        await ctx.message.channel.send(random_success_quote())
-    else:
-        await ctx.message.channel.send(random_failure_quote())
-
-
-
-async def thirty_seven(ctx):
-    """ order 37 """
-    if is_admin(ctx.message.author):
-        await play_sound(ctx, "doit.mp3")
-        for member in ctx.message.guild.members:
-            try:
-                if member not in (ctx.message.author, ctx.message.guild.me):
-                    await member.edit(
-                        voice_channel=get_voice_channel(
-                            ctx, "💦Moist Chamber"),
-                        reason=random_success_quote())
-            except: #pylint:disable=bare-except
-                pass
-        await ctx.message.channel.send(random_success_quote())
-    else:
-        await ctx.message.channel.send(random_failure_quote())
-
-
-async def five(ctx):
-    """ order 5 """
-    if is_admin(ctx.message.author):
-        for member in ctx.message.guild.members:
-            try:
-                if member != ctx.message.guild.me and is_admin(member):
-                    await member.edit(
-                        voice_channel=get_voice_channel(
-                            ctx, "🎩Admin Lobby"),
-                        reason=random_success_quote())
-            except: #pylint:disable=bare-except
-                pass
-        await ctx.message.channel.send(random_success_quote())
-    else:
-        await ctx.message.channel.send(random_failure_quote())
-
-
-async def play_sound(ctx, filename):
-    """ play sound """
-    voice_channel = get_voice_channel(ctx, '🎭Main Lobby')
-    if voice_channel is not None:
-        vc = await voice_channel.connect() #pylint:disable=invalid-name
-        vc.play(discord.FFmpegPCMAudio(filename), after=lambda e: print('done'))
-        while vc.is_playing():
-            await asyncio.sleep(1)
-        await vc.disconnect()
-
-def get_voice_channel(ctx, name):
-    """ returns voice channel """
-    for channel in ctx.message.guild.voice_channels:
-        if channel.name == name:
-            return channel
-    return None
-
-
-def is_barb(member):
-    """ if barbossa """
-    return True if member.name == "Barbossa" else False
+        await ctx.message.channel.send("You have no power here.")
 
 
 def is_admin(member):
-    """ determines if admin """
-    for role in member.roles:
-        if role.name in ADMIN_ROLES:
-            return True
-    return False
+    """ determines if member has admin rights. In this case,
+    any member who can ban another is considered an admin.
+
+    :param: member object
+    :return: boolean
+    """
+    return member.guild_permissions.ban_members
 
 
-def is_sherp(member):
-    """ determines if sherp """
-    for role in member.roles:
-        if role.name == "Trailer Park Supervisor":
-            return True
-    return False
+async def speak(channel, filename):
+    """ joins voice channel & plays audio file. Once audio is done playing,
+    bot disconnects itself.
+
+    :param: voice channel object
+    :param: path to .mp3 file
+    """
+    if channel is not None:
+        voice = await channel.connect()
+        voice.play(discord.FFmpegPCMAudio(filename),
+                   after=lambda e: print('done'))
+        while voice.is_playing():
+            await asyncio.sleep(1)
+        await voice.disconnect()
 
 
-def random_success_quote():
-    """ return string of random success quote """
-    return SUCCESS[randint(0, len(SUCCESS) - 1)]
+def get_active_users(channels):
+    """retrieves all active users in voice lobbies.
+
+    :param: list of voice channel objects
+    :yield: generator object of active users
+    """
+    for channel in channels:
+        for member in channel.members:
+            yield member
 
 
-def random_failure_quote():
-    """ return string of random failure quote """
-    return FAILURE[randint(0, len(FAILURE) - 1)]
+async def disconnect_users(members):
+    """disconnects users from discord voice.
+
+    :param: list of member objects
+    """
+    for member in members:
+        await member.edit(voice_channel=None)
 
 
-ADMIN_ROLES = [
-    "adminnss",
-    "Shareholder",
-    "Trailer Park Supervisor",
-    "The OG's"]
-
-
-# Trailer Park Supervisor
-# ----------------------------- QUOTES -----------------------------
-SUCCESS = [
-    "Everything that has transpired has done so according to my design.",
-    "Wipe them out. All of them.",
-    "Are you threatening me, Master Jedi?",
-    "The remaining Jedi will be hunted down and defeated!",
-    "POWER!!! UNLIMITED... POWER!!!",
-    "Do it!"
-]
-
-FAILURE = [
-    "Your feeble skills are no match for the power of the dark side.",
-    "You have no power here."
-]
-
-# ----------------------------- ORDERS -----------------------------
-# promote fucking randys gut
-FOUR = """In the event of the Supreme Commander (Chancellor) being incapacitated,
-overall GAR command shall fall to the vice chair of the Senate until a successor
-is appointed or alternative authority identified as outlined in Section 6
-"""
-
-# put all admins in admin lobby
-FIVE = """In the event of the Supreme Commander (Chancellor) being declared unfit to issue
-orders, as defined in Section 6 (ii), the Chief of the Defense Staff shall assume
-GAR command and form a strategic cell of senior officers (see page 1173, para 4)
-until a successor is appointed or alternative authority identified.
-"""
-
-# put everyone in a chamber
-THIRTY_SEVEN = """Capture of a single wanted individual through the mass arrest and threatened
-execution of a civilian population. Follow-up directives include scenarios for
-body disposal of civilian casualties and suppression of communications.
-"""
-
-# put barbossa in a chamber
-SIXTY_FIVE = """In the event of either (i) a majority in the Senate declaring the
-Supreme Commander (Chancellor) to be unfit to issue orders, or (ii) the
-Security Council declaring him or her to be unfit to issue orders, and an
-authenticated order being received by the GAR, commanders shall be authorized
-to detain the Supreme Commander, with lethal force if necessary, and command
-of the GAR shall fall to the acting Chancellor until a successor is appointed
-or alternative authority identified as outlined in Section 6.
-"""
-
-# disconnect everyone
-SIXTY_SIX = """In the event of Jedi officers acting against the interests of
-the Republic, and after receiving specific orders verified as coming directly
-from the Supreme Commander (Chancellor), GAR commanders will remove those officers
-by lethal force, and command of the GAR will revert to the Supreme Commander (Chancellor)
-until a new command structure is established.
-"""
-
-
-bot.run(os.getenv("DISCORD_TOKEN"))
+bot.run(os.getenv("DISCORD_TOKEN", ''))

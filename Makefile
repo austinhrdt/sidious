@@ -16,22 +16,31 @@ build:
 	@docker build -t ${IMAGE_LATEST} .
 
 
-publish: build
-	@echo ? Pushing docker image to docker hub.
+tag:
+	@echo ? Tagging ${PROJECT_NAME} with ${VERSION}
 	@docker tag ${IMAGE_LATEST} ${IMAGE}
-	@docker push ${IMAGE}
+
+
+push:
+	@echo ? Pushing ${IMAGE_LATEST} to docker hub
 	@docker push ${IMAGE_LATEST}
+
+
+publish: build tag
+	@echo ? Pushing ${IMAGE} to docker hub.
+	@docker push ${IMAGE}
 
 
 dev: build
 	@echo ? Running docker container locally.
 	@docker run --rm -it -e DISCORD_TOKEN=${TOKEN} ${IMAGE_LATEST}
 
+
 up:
-	@echo ? Starting docker-compose of service - detatched.
+	@echo ? Starting docker-compose of service
 	@docker-compose up -d
 
 
-destroy:
-	@echo Stopping docker-compose of service
+down:
+	@echo ? Stopping docker-compose of service
 	@docker-compose down
