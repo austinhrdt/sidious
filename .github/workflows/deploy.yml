@@ -1,6 +1,5 @@
 # This workflow will build and push a new container image to Amazon ECR,
-# and then will deploy a new task definition to Amazon ECS, when a release is created
-
+# and then will deploy a new task definition to Amazon ECS, when master is updated
 
 on:
   push:
@@ -57,5 +56,5 @@ jobs:
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: discord-bot-service
-        cluster: default
+        cluster: discord-bots
         wait-for-service-stability: true
