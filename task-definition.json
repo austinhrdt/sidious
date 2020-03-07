@@ -1,5 +1,6 @@
 {
     "family": "sidious-fargate",
+    "executionRoleArn": "arn:aws:iam::363474188884:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "containerDefinitions": [
         {
