@@ -20,7 +20,7 @@ async def execute(ctx, *, content):
     """
     if content == "66" and is_admin(ctx.message.author):
         users = get_active_users(ctx.message.guild.voice_channels)
-        await speak(ctx.message.author.voice, "media/sixtysix.mp3")
+        await speak(ctx.message.author.voice.channel, "media/sixtysix.mp3")
         await disconnect_users(users)
     else:
         await ctx.message.channel.send("You have no power here.")

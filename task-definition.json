@@ -1,0 +1,23 @@
+{
+    "family": "sidious-fargate",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "sidious-bot",
+            "image": "sidious",
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512"
+}
