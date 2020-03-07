@@ -1,7 +1,5 @@
 """ Darth Sidious discord bot.
-
 https://github.com/austinhrdt/sidious
-
 """
 import os
 import asyncio

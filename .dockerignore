@@ -18,3 +18,8 @@ coverage.xml
 *.md
 Makefile
 Dockerfile
+.vscode
+.gitignore
+version
+.github
+task-definition.json
