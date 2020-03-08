@@ -15,11 +15,3 @@ Admins may send `!execute 66` into a text channel (any text channel) and the bot
 ## Toolkit
 
 This bot was built using [discord.py](https://github.com/Rapptz/discord.py). It is containerized and deployed on AWS Fargate via GitHub Actions workflow, based on [this blogpost](https://aws.amazon.com/blogs/opensource/github-actions-aws-fargate/)
-
-## TODO
-
-- [x] increase resource limits
-- [ ] configure autoscaling.
-- [ ] add logging to Cloud Watch.
-- [ ] fix permissions & vpc configuration on aws.
-- [x] fix permissions of bot so administrative privilege is not required.
