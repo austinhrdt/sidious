@@ -1,27 +1,64 @@
 """ Darth Sidious discord bot.
 https://github.com/austinhrdt/sidious
 """
+import logging
 import os
 import asyncio
 import discord
 from discord.ext import commands
 
+log = logging.getLogger()
+
+if log.handlers:
+    for handler in log.handlers:
+        log.removeHandler(handler)
+
+logging.basicConfig(level=logging.INFO)
+
 
 bot = commands.Bot(command_prefix='!')
+
+
+@bot.event
+async def on_ready():
+    """ start up ... """
+    log.info("%s total discord servers have been infected.", len(bot.guilds))
+    log.info(bot.guilds)
 
 
 @bot.command(pass_context=True)
 async def execute(ctx, *, content):
     """ listens to text channel for !execute.
+
     :param: context
     :param: content - the text after the command
     """
-    if content == "66" and is_admin(ctx.message.author):
-        users = get_active_users(ctx.message.guild.voice_channels)
-        await speak(ctx.message.author.voice.channel, "media/sixtysix.mp3")
-        await disconnect_users(users)
+    if content and content == "66" and is_admin(ctx.message.author):
+        users = get_active_users(
+            ctx.message.guild.voice_channels, ctx.message.guild.me)
+        channel = ctx.message.guild.voice_channels[0]
+        if ctx.message.author.voice:
+            log.info("author is connected to voice.")
+            channel = ctx.message.author.voice.channel
+        if not_connected(ctx.message.guild.me) and can_connect(channel, ctx.message.guild.me):
+            log.info(
+                "sidious is not already connected and is permitted. Sleeping...")
+            await speak(channel, "media/sixtysix.mp3")
+            await disconnect_users(users)
+        else:
+            log.warning(
+                "sidious is either already connected or is not permitted to connect...")
     else:
         await ctx.message.channel.send("You have no power here.")
+
+
+def not_connected(member):
+    """ determines if member is already connected to voice
+
+    :param: member object
+    :return: boolean
+    """
+    return False if member.voice else True
 
 
 def is_admin(member):
@@ -41,24 +78,40 @@ async def speak(channel, filename):
     :param: voice channel object
     :param: path to .mp3 file
     """
-    if channel is not None:
-        voice = await channel.connect()
-        voice.play(discord.FFmpegPCMAudio(filename),
-                   after=lambda e: print('done'))
-        while voice.is_playing():
-            await asyncio.sleep(1)
-        await voice.disconnect()
+    log.info("connecting to %s", channel.name)
+    voice = await channel.connect()
+    log.info("connected, playing media")
+    voice.play(discord.FFmpegPCMAudio(filename),
+               after=lambda e: print('done'))
+    while voice.is_playing():
+        log.info("still playing...")
+        await asyncio.sleep(1)
+    await voice.disconnect()
 
 
-def get_active_users(channels):
+def can_connect(channel, member):
+    """ determines if member is permitted to connect to voice channel.
+
+    :param: voice channel object
+    :param: member object
+    :return: boolean
+    """
+    return channel.permissions_for(member).connect
+
+
+def get_active_users(channels, user):
     """retrieves all active users in voice lobbies.
 
     :param: list of voice channel objects
-    :yield: generator object of active users
+    :param: bot object
+    :return: list of active users
     """
+    members = []
     for channel in channels:
-        for member in channel.members:
-            yield member
+        if can_connect(channel, user):
+            for member in channel.members:
+                members.append(member)
+    return members
 
 
 async def disconnect_users(members):
@@ -66,6 +119,7 @@ async def disconnect_users(members):
 
     :param: list of member objects
     """
+    log.info("disconnecting members: %s", members)
     for member in members:
         await member.edit(voice_channel=None)
 

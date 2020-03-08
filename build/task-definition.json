@@ -19,6 +19,14 @@
                     "valueFrom": "sidious_token"
                 }
             ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "awslogs-sidious",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "awslogs-sidious"
+                }
+            },
             "essential": true
         }
     ],
