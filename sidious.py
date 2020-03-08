@@ -30,6 +30,9 @@ async def execute(ctx, *, content):
     :param: context
     :param: content - the text after the command
     """
+    await bot.change_presence(activity=discord.Activity(
+        type=discord.ActivityType.watching,
+        name=f"Star Wars | {len(bot.guilds)} servers infected."))
     if content and content == "66" and is_admin(ctx.message.author):
         users = get_active_users(
             ctx.message.guild.voice_channels, ctx.message.guild.me)
@@ -37,7 +40,8 @@ async def execute(ctx, *, content):
         channel = ctx.message.guild.voice_channels[0]
         if ctx.message.author.voice:
             channel = ctx.message.author.voice.channel
-            log.info("%s is connected to %s (voice)", ctx.message.author, channel)
+            log.info("%s is connected to %s (voice)",
+                     ctx.message.author, channel)
         if not_connected(ctx.message.guild.me) and can_connect(channel, ctx.message.guild.me):
             await speak(channel, "media/sixtysix.mp3")
             await disconnect_users(users)
@@ -106,7 +110,8 @@ def get_active_users(channels, user):
     log.info("searching %s voice channels for active users", len(channels))
     for channel in channels:
         if can_connect(channel, user):
-            log.info("collecting %s active users in %s", len(channel.members), channel)
+            log.info("collecting %s active users in %s",
+                     len(channel.members), channel)
             for member in channel.members:
                 members.append(member)
         else:
