@@ -4,7 +4,7 @@
 
 ## Description
 
-Darth Sidious discord bot. To add it to your discord server, refer [this link](https://discordapp.com/oauth2/authorize?client_id=673260587710545928&scope=bot&permissions=8). Administrative permissions are required at the moment.
+Darth Sidious discord bot. To add it to your discord server, refer [this link](https://discordapp.com/oauth2/authorize?client_id=673260587710545928&scope=bot&permissions=19926016).
 
 ![Sheev](media/sidious.JPG)
 
@@ -22,4 +22,4 @@ This bot was built using [discord.py](https://github.com/Rapptz/discord.py). It 
 - [ ] configure autoscaling.
 - [ ] add logging to Cloud Watch.
 - [ ] fix permissions & vpc configuration on aws.
-- [ ] fix permissions of bot so administrative privilege is not required.
+- [x] fix permissions of bot so administrative privilege is not required.
