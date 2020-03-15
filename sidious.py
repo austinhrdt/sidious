@@ -32,7 +32,7 @@ async def execute(ctx, *, content):
     """
     await bot.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching,
-        name=f"Star Wars | {len(bot.guilds)} servers infected."))
+        name=f"Star Wars | {len(bot.guilds)} servers infected"))
     if content and content == "66" and is_admin(ctx.message.author):
         users = get_active_users(
             ctx.message.guild.voice_channels, ctx.message.guild.me)
