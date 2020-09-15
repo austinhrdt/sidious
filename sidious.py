@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix='!')
 
 @bot.event
 async def on_ready():
-    """ application entrypoint """
+    """ application entrypoint ha """
     log.info("%s total discord servers have been infected.", len(bot.guilds))
     log.info(bot.guilds)
 
