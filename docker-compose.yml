@@ -5,4 +5,4 @@ services:
     image: ahardt013/sidious:latest
     restart: always
     environment:
-      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_TOKEN=${SIDIOUS_TOKEN}
