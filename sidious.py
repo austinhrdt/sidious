@@ -44,7 +44,7 @@ async def execute(ctx, *, content):
                      ctx.message.author, channel)
         if not_connected(ctx.message.guild.me) and can_connect(channel, ctx.message.guild.me):
             await speak(channel, "media/sixtysix.mp3")
-            await disconnect_users(users)
+            await disconnect_users(ctx, users)
         else:
             log.warning(
                 "sidious is either already connected or is not permitted to connect to %s", channel)
@@ -111,23 +111,23 @@ def get_active_users(channels, user):
     for channel in channels:
         if can_connect(channel, user):
             log.info("collecting %s active users in %s",
-                     len(channel.members), channel)
-            for member in channel.members:
+                     len(channel.voice_states.keys()), channel)
+            for member in channel.voice_states.keys():
                 members.append(member)
         else:
             log.warning("cannot connect to %s", channel)
     return members
 
 
-async def disconnect_users(members):
+async def disconnect_users(ctx, members):
     """disconnects users from discord voice.
 
     :param: list of member objects
     """
     log.info("disconnecting members: %s", members)
-    for member in members:
+    for member_id in members:
+        member = await ctx.guild.fetch_member(member_id)
         await member.edit(voice_channel=None)
         log.info("disconnected %s", member)
-
 
 bot.run(os.getenv("DISCORD_TOKEN", ''))

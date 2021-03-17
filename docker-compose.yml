@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  scav:
+    container_name: sidious
+    image: ahardt013/sidious:latest
+    restart: always
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
